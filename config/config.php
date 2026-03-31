@@ -12,4 +12,6 @@ define('SESSION_TIMEOUT', 1800); // 30 minutes
 // Include database config
 require_once 'db.php';
 
+
 ?>
+
