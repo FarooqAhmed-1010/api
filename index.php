@@ -22,7 +22,7 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
+    <!-- Hero Section with Gradient Background -->
     <section class="hero">
         <div class="container">
             <h2>Welcome to Computer Parts Shop</h2>

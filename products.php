@@ -22,10 +22,13 @@
         </div>
     </nav>
 
-    <!-- Products Page -->
+    <!-- Products Page with Gradient Background -->
     <section class="products-page">
         <div class="container">
-            <h2>Our Products</h2>
+            <div class="products-header">
+                <h2>Our Premium Products</h2>
+                <p class="subtitle">High-quality computer hardware for every build</p>
+            </div>
             
             <!-- Filter Section -->
             <div class="filter-section">
@@ -46,7 +49,7 @@
             <!-- Products Grid -->
             <div class="products-grid" id="products-container">
                 <!-- Products will be loaded here by JavaScript -->
-                <p>Loading products...</p>
+                <p class="loading-message">Loading products...</p>
             </div>
         </div>
     </section>

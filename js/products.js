@@ -2,7 +2,8 @@
 // PRODUCTS.JS - Products Page Functionality
 // ============================================
 
-// All products data (mock data - fetch from DB in production)
+// All products data (sample products with correct placeholder images)
+// Using https://via.placeholder.com for reliable placeholder images
 const allProducts = [
     {
         id: 1,
@@ -13,7 +14,7 @@ const allProducts = [
         price: 589.99,
         stock_quantity: 15,
         description: 'High-performance gaming and productivity CPU with 24 cores',
-        image_url: 'https://via.placeholder.com/250x250?text=Intel+i9'
+        image_url: 'https://via.placeholder.com/250?text=Intel+i9'
     },
     {
         id: 2,
@@ -24,7 +25,7 @@ const allProducts = [
         price: 1599.99,
         stock_quantity: 5,
         description: 'Flagship gaming GPU with 24GB VRAM',
-        image_url: 'https://via.placeholder.com/250x250?text=RTX+4090'
+        image_url: 'https://via.placeholder.com/250?text=RTX+4090'
     },
     {
         id: 3,
@@ -35,7 +36,7 @@ const allProducts = [
         price: 199.99,
         stock_quantity: 30,
         description: '32GB DDR5 memory kit for high-speed performance',
-        image_url: 'https://via.placeholder.com/250x250?text=Corsair+RAM'
+        image_url: 'https://via.placeholder.com/250?text=Corsair+RAM'
     },
     {
         id: 4,
@@ -46,7 +47,7 @@ const allProducts = [
         price: 89.99,
         stock_quantity: 25,
         description: 'Fast NVMe storage with 7GB/s read speed',
-        image_url: 'https://via.placeholder.com/250x250?text=Samsung+SSD'
+        image_url: 'https://via.placeholder.com/250?text=Samsung+SSD'
     },
     {
         id: 5,
@@ -57,7 +58,7 @@ const allProducts = [
         price: 349.99,
         stock_quantity: 10,
         description: 'Premium X650 chipset motherboard',
-        image_url: 'https://via.placeholder.com/250x250?text=ASUS+Mobo'
+        image_url: 'https://via.placeholder.com/250?text=ASUS+Motherboard'
     },
     {
         id: 6,
@@ -68,7 +69,7 @@ const allProducts = [
         price: 179.99,
         stock_quantity: 20,
         description: '850W 80+ Gold certified power supply',
-        image_url: 'https://via.placeholder.com/250x250?text=Corsair+PSU'
+        image_url: 'https://via.placeholder.com/250?text=Corsair+PSU'
     },
     {
         id: 7,
@@ -79,7 +80,7 @@ const allProducts = [
         price: 99.99,
         stock_quantity: 12,
         description: 'Premium air cooler for high-end CPUs',
-        image_url: 'https://via.placeholder.com/250x250?text=Noctua+Cooler'
+        image_url: 'https://via.placeholder.com/250?text=Noctua+Cooler'
     },
     {
         id: 8,
@@ -90,47 +91,101 @@ const allProducts = [
         price: 79.99,
         stock_quantity: 18,
         description: 'Mid-tower ATX case with great airflow',
-        image_url: 'https://via.placeholder.com/250x250?text=Lian+Li+Case'
+        image_url: 'https://via.placeholder.com/250?text=Lian+Li+Case'
     }
 ];
 
-// Display products
+// Display products with modern card layout
 function displayProducts(productsToDisplay = allProducts) {
     const container = document.getElementById('products-container');
     if (!container) return;
     
+    // Show message if no products found
     if (productsToDisplay.length === 0) {
-        container.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">No products found</p>';
+        container.innerHTML = '<p class="no-products" style="grid-column: 1 / -1; text-align: center; padding: 2rem; font-size: 1.1rem; color: #5f6368;">No products found in this category</p>';
         return;
     }
     
+    // Generate product cards HTML
     container.innerHTML = productsToDisplay.map(product => `
-        <div class="product-card">
+        <div class="product-card" data-product-id="${product.id}">
+            <!-- Product Image Container -->
             <div class="product-image">
-                <img src="${product.image_url}" alt="${product.product_name}">
+                <img 
+                    src="${product.image_url}" 
+                    alt="${product.product_name}"
+                    loading="lazy"
+                    onerror="this.src='https://via.placeholder.com/250?text=Image+Not+Found'"
+                >
             </div>
+            
+            <!-- Product Info Container -->
             <div class="product-info">
+                <!-- Category Badge -->
                 <div class="product-category">${product.category}</div>
+                
+                <!-- Product Name -->
                 <h3 class="product-name">${product.product_name}</h3>
+                
+                <!-- Brand -->
+                <div class="product-brand">By ${product.brand}</div>
+                
+                <!-- Price -->
                 <div class="product-price">$${product.price.toFixed(2)}</div>
-                <div class="product-stock">Stock: ${product.stock_quantity}</div>
-                <div class="product-actions">
-                    <input type="number" value="1" min="1" class="qty-input">
-                    <button class="btn btn-primary" onclick="handleAddToCart(event, ${product.id})">Add to Cart</button>
+                
+                <!-- Stock Status -->
+                <div class="product-stock ${product.stock_quantity > 0 ? 'in-stock' : 'out-of-stock'}">
+                    ${product.stock_quantity > 0 ? `✓ In Stock (${product.stock_quantity})` : '✗ Out of Stock'}
                 </div>
+                
+                <!-- Add to Cart Section -->
+                <div class="product-actions">
+                    <input 
+                        type="number" 
+                        value="1" 
+                        min="1" 
+                        max="${product.stock_quantity}"
+                        class="qty-input"
+                        title="Quantity"
+                    >
+                    <button 
+                        class="btn btn-primary add-to-cart-btn" 
+                        onclick="handleAddToCart(event, ${product.id})"
+                        ${product.stock_quantity <= 0 ? 'disabled' : ''}
+                    >
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+            
+            <!-- View Details Overlay -->
+            <div class="product-overlay">
+                <button class="view-details-btn">View Details</button>
             </div>
         </div>
     `).join('');
     
-    // Add click handlers to view product details
+    // Add event listeners to product cards
     document.querySelectorAll('.product-card').forEach((card, index) => {
-        card.style.cursor = 'pointer';
+        // View details on card click
         card.addEventListener('click', function(e) {
+            // Don't navigate if clicking on buttons or inputs
             if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'INPUT') {
-                window.location.href = `product-detail.php?id=${productsToDisplay[index].id}`;
+                navigateToProductDetail(productsToDisplay[index].id);
             }
         });
+        
+        // View details button click
+        card.querySelector('.view-details-btn')?.addEventListener('click', function(e) {
+            e.stopPropagation();
+            navigateToProductDetail(productsToDisplay[index].id);
+        });
     });
+}
+
+// Navigate to product detail page
+function navigateToProductDetail(productId) {
+    window.location.href = `product-detail.php?id=${productId}`;
 }
 
 // Filter products by category
